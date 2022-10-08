@@ -5,9 +5,8 @@ from main import set_webhook, get_webhook_status
 
 
 async def handle(request):
-    print(request.json)
-    print(request.json())
-    text = 'OK'
+    text = await request.json()
+    print(text)
     return web.Response(text=text)
     # return web.HTTPForbidden
 
