@@ -1,5 +1,26 @@
+import json
 
-bot = Bot(token=TG_TOKEN)
+from aiogram import Bot, types
+from aiogram.dispatcher import Dispatcher
+from aiogram.dispatcher.webhook import SendMessage
+from aiogram.utils.executor import start_webhook
+from aiogram.types.input_file import InputFile
+
+with open('secr.json') as file:
+    secret = json.load(file)
+API_TOKEN = secret['TG_PROD_TOKEN']
+TG_API_URL = f'https://api.telegram.org/bot{API_TOKEN}/'
+
+# webhook settings
+WEBHOOK_HOST = 'https://999109-cm78017.tmweb.ru:8443'
+WEBHOOK_PATH = ''  # /path/to/api
+WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+
+# webserver settings
+WEBAPP_HOST = 'https://999109-cm78017.tmweb.ru'  # or ip
+WEBAPP_PORT = 8443
+
+bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
 
@@ -12,20 +33,18 @@ async def echo(message: types.Message):
 
 
 async def on_startup(dp):
-    await bot.set_webhook(WEBHOOK_URL)
+    certificate = InputFile('ssl/public.pem')
+    await bot.set_webhook(WEBHOOK_URL, certificate=certificate)
     # insert code here to run it after start
-    pass
 
 
 async def on_shutdown(dp):
-    # logging.warning('Shutting down..')
     # insert code here to run it before shutdown
     # Remove webhook (not acceptable in some cases)
     await bot.delete_webhook()
     # Close DB connection (if used)
     await dp.storage.close()
     await dp.storage.wait_closed()
-
 
 
 if __name__ == '__main__':
@@ -36,6 +55,5 @@ if __name__ == '__main__':
         on_shutdown=on_shutdown,
         skip_updates=True,
         host=WEBAPP_HOST,
-        port=WEBHOOK_PORT,
+        port=WEBAPP_PORT,
     )
-
