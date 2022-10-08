@@ -89,6 +89,6 @@ getMe_url = URL+'getMe'
 
 if __name__ == '__main__':
     # print(getMe_url)
-    app.run(host='0.0.0.0', port=8443, ssl_context=ssl_context)
+    app.run(host='999109-cm78017.tmweb.ru', port=8443, ssl_context=ssl_context)
     # run_server(handler_class=SimpleGetHandler)
     # main()
