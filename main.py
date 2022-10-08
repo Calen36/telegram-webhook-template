@@ -56,6 +56,7 @@ app = Flask('Webhooks Receiver')
 def set_webhook():
     with open(ssl_certificate, 'rb') as file:
         certificate = file.read()
+    print(type(certificate))
     url = TG_API_URL + 'setwebhook'
     data = {'url': f'{webhook_url}',
             "certificate": certificate}
@@ -63,7 +64,7 @@ def set_webhook():
     print()
     print(r.text)
     print(r.url)
-    print(r.request)
+    print(r.request.url)
     print()
 
 
@@ -73,6 +74,7 @@ def get_webhook_status():
     print('WEBHOOK STATUS:')
     print_dict(r.json())
     print()
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
