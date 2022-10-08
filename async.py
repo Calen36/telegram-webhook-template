@@ -1,10 +1,11 @@
 from aiohttp import web
 import ssl
+import json
 from main import set_webhook, get_webhook_status
 
 
 async def handle(request):
-    text = request.json
+    text = json(request.json)
     return web.Response(text=text)
     # return web.HTTPForbidden
 
