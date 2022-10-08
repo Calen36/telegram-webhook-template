@@ -63,14 +63,16 @@ def set_webhook():
     print()
     print(r.text)
     print(r.url)
+    print(r.request)
     print()
 
 
 def get_webhook_status():
     url = TG_API_URL + 'getWebhookInfo'
     r = requests.get(url)
-    print('WEBHOOK STATUS:', r.text)
-
+    print('WEBHOOK STATUS:')
+    print_dict(r.json())
+    print()
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
