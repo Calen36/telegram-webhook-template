@@ -4,9 +4,6 @@ import os
 
 import requests
 from flask import Flask, request, jsonify
-from aiogram import Bot, Dispatcher, types
-from aiogram.dispatcher.webhook import SendMessage
-from aiogram.utils.executor import start_webhook
 
 
 proj_dir = Path(__file__).resolve().parent
@@ -14,16 +11,6 @@ ssl_dir = os.path.join(proj_dir, 'ssl')
 ssl_certificate = os.path.join(ssl_dir, 'public.pem')
 ssl_private_key = os.path.join(ssl_dir, 'private.key')
 ssl_context = (ssl_certificate, ssl_private_key)
-
-WEBHOOK_HOST = 'https://999109-cm78017.tmweb.ru'
-WEBHOOK_PORT = '8443'
-WEBHOOK_PATH = '/webhook/astro/'
-WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
-
-# webserver settings
-
-WEBAPP_HOST = '0.0.0.0'  # or ip
-WEBAPP_PORT = 8443
 
 
 with open('secr.json') as file:
@@ -73,11 +60,10 @@ def index():
         try:
             chat_id = r['message']['chat']['id']
             send_message(chat_id, 'тратата!')
-        except:
-            print('Oй!')
+        except Exception as ex:
+            print('Oй!', ex)
         return jsonify(r)
     return "<h1>Errrr! Let's drink a flask of whiskey!</h1>"
-
 
 
 if __name__ == '__main__':
