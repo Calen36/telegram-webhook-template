@@ -1,16 +1,23 @@
+from asyncio import sleep
+
 import aiohttp.web_request
 from aiohttp import web
 import ssl
 import json
 from main import set_webhook, get_webhook_status, send_message
 
+CNT = 0
 
 async def handle(request: aiohttp.web_request.Request):
+    global CNT
     try:
         r = await request.json()
         chat_id = r['message']['chat']['id']
         message_text = r['message']['text']
-        send_message(chat_id, f'Cам ты {message_text}!')
+        CNT += 1
+        send_message(chat_id, f'Сообщение {CNT}!')
+        await sleep(3)
+        send_message(chat_id, f'Продолжение {CNT}')
 
         return web.Response(text='ok')
     except:
