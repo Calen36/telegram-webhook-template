@@ -57,9 +57,9 @@ def set_webhook():
     with open(ssl_certificate) as file:
         certificate = file.read()
     url = TG_API_URL + 'setwebhook'
-    headers = {'url': f'{webhook_url}'}
+    data = {'url': f'{webhook_url}'}
     # files = {'file': ('certificate', open(ssl_certificate, 'rb'), 'text/plain')}
-    r = requests.post(url=url, headers=headers)
+    r = requests.post(url=url, data=data)
     print()
     print(r.text)
     print(r.content)
