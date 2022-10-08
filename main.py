@@ -59,7 +59,7 @@ def set_webhook():
     print(type(certificate))
     url = TG_API_URL + 'setwebhook'
     data = {'url': f'{webhook_url}'}
-    files = {file:{'certificate' : certificate}}
+    files = {'certificate' : certificate}
     r = requests.post(url=url, data=data, files=files)
     print()
     print(r.text)
