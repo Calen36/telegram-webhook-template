@@ -9,6 +9,7 @@ from main import set_webhook, get_webhook_status, send_message
 CNT = 0
 
 async def foo(request):
+    await sleep(0.1)
     global CNT
     r = await request.json()
     print(request)
