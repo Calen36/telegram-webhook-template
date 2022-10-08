@@ -4,6 +4,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import requests
 from flask import Flask, request, jsonify
 
+
 DEBUG = False
 
 with open('secr.json') as file:
@@ -59,6 +60,11 @@ def main():
 
 
 # РЕАЛИЗАЦИЯ ЧЕРЕЗ FLASK
+
+context = SSL.Context(SSL.SSLv3_METHOD)
+context.use_privatekey_file('/path_to_key/key.key')
+context.use_certificate_file('/path_to_cert/cert.crt')
+
 app = Flask('Webhooks Receiver')
 
 
@@ -72,45 +78,16 @@ def index():
         return jsonify(r)
     return "<h1>Errrr! Let's drink a flask of whiskey!</h1>"
 
-# РЕАЛИЗАЦИЯ ЧЕРЕЗ СТАНДАРТНУЮ БИБЛИОТЕКУ
-
-
-APP_HOST = '0.0.0.0'
-APP_PORT = 8000
-
-
-class SimpleGetHandler(BaseHTTPRequestHandler):
-    def _set_headers(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html; charset=utf-8')
-        self.end_headers()
-
-    def _html(self, message):
-        content = f"<html><body><h1>{message}</h1></body></html>"
-        return content.encode('utf8')
-
-    def do_GET(self):
-        self._set_headers()
-        message = 'Kurwa!'
-        self.wfile.write(self._html(message))
-
-    def do_POST(self):
-        self._set_headers()
-        message = 'Kurwa!'
-        self.wfile.write(self._html(message))
-
-
-def run_server(server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
-    server_address = (APP_HOST, APP_PORT)
-    httpd = server_class(server_address, handler_class)
-    httpd.serve_forever()
 
 webhook_url = URL + 'setWebhook?url=https://999109-cm78017.tmweb.ru:8443/'
 getMe_url = URL+'getMe'
 
 if __name__ == '__main__':
-    # print(webhook_url)
+    print(webhook_url)
     # print(getMe_url)
-    app.run(host='0.0.0.0', port=8443, ssl_context='adhoc')
+    if DEBUG:
+        app.run(host='0.0.0.0', port=8443)
+    else:
+        app.run(host='0.0.0.0', port=8443, ssl_context=('cert.pem, key.pem'))
     # run_server(handler_class=SimpleGetHandler)
     # main()
