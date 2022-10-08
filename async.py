@@ -9,28 +9,28 @@ from main import set_webhook, get_webhook_status, send_message
 
 CNT = 0
 
-async def foo(request):
-    global CNT
-    r = await request.json()
-    print(request)
-    CNT += 1
-    num = CNT
-    print(f"Start {num}")
-    print(r)
-    # send_message(chat_id, f'Сообщение {CNT}!')
-    await sleep(5)
-    print(f"Stop {num}")
-    # send_message(chat_id, f'Продолжение {CNT}')
 
+async def foo(request):
+    try:
+        global CNT
+        r = await request.json()
+        chat_id = r['message']['chat']['id']
+        print(request)
+        CNT += 1
+        num = CNT
+        print(f"Start {num}")
+        print(r)
+        send_message(chat_id, f'Сообщение {CNT}!')
+        await sleep(5)
+        print(f"Stop {num}")
+        send_message(chat_id, f'Продолжение {CNT}')
+    except Exception as ex:
+        print('oops', ex)
 
 async def handle(request: aiohttp.web_request.Request):
-    try:
-        loop.create_task(foo(request))
-        return web.Response(text='ok')
-    except Exception as ex:
-        return web.Response(text=str(ex))
+    loop.create_task(foo(request))
+    return web.Response(text='ok')
 
-        return web.HTTPForbidden()
 
 app = web.Application()
 app.add_routes([web.post('/', handle)])
