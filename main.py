@@ -64,17 +64,6 @@ def get_updates():
     return r.json()
 
 
-def main():
-    # r = requests.get(URL + 'getMe')
-    # print_dict(r.json())
-    r = get_updates()
-    try:
-        chat_id = r['result'][-1]['message']['chat']['id']
-        send_message(chat_id, 'тратата!')
-    except:
-        print('cant get chat id')
-
-
 app = Flask('Webhooks Receiver')
 
 
@@ -102,7 +91,7 @@ dp = Dispatcher(bot)
 @dp.message_handler()
 async def echo(message: types.Message):
     # Regular request
-    # await bot.send_message(message.chat.id, message.text)
+    await bot.send_message(message.chat.id, message.text)
     # or reply INTO webhook
     return SendMessage(message.chat.id, message.text)
 
