@@ -1,9 +1,17 @@
 import json
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from pathlib import Path
+import os
 
 import requests
 from flask import Flask, request, jsonify
 
+proj_dir = Path(__file__).resolve().parent
+ssl_dir = os.path.join(proj_dir, 'ssl')
+cert = os.path.join(ssl_dir, 'server.crt')
+cert_key = os.path.join(ssl_dir, 'server.key')
+ssl_context = (cert, cert_key)
+print(ssl_context)
 
 DEBUG = False
 
@@ -61,10 +69,6 @@ def main():
 
 # РЕАЛИЗАЦИЯ ЧЕРЕЗ FLASK
 
-context = SSL.Context(SSL.SSLv3_METHOD)
-context.use_privatekey_file('/path_to_key/key.key')
-context.use_certificate_file('/path_to_cert/cert.crt')
-
 app = Flask('Webhooks Receiver')
 
 
@@ -80,14 +84,11 @@ def index():
 
 
 webhook_url = URL + 'setWebhook?url=https://999109-cm78017.tmweb.ru:8443/'
+info_url = URL + 'getWebhookInfo'
 getMe_url = URL+'getMe'
 
 if __name__ == '__main__':
-    print(webhook_url)
     # print(getMe_url)
-    if DEBUG:
-        app.run(host='0.0.0.0', port=8443)
-    else:
-        app.run(host='0.0.0.0', port=8443, ssl_context=('cert.pem, key.pem'))
+    app.run(host='0.0.0.0', port=8443, ssl_context=ssl_context)
     # run_server(handler_class=SimpleGetHandler)
     # main()
