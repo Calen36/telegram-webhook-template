@@ -18,6 +18,7 @@ async def handle(request: aiohttp.web_request.Request):
         CNT += 1
         num = CNT
         print(f"Start {num}")
+        print(r)
         # send_message(chat_id, f'Сообщение {CNT}!')
         await sleep(5)
         print(f"Stop {num}")
