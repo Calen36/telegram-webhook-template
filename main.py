@@ -2,7 +2,7 @@ import json
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 import requests
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 DEBUG = False
 
@@ -64,9 +64,12 @@ app = Flask('Webhooks Receiver')
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    if request.headers.get('content-type') == 'application/json':
-        data = request.stream.read().decode('utf8')
-        return data
+    if request.method == 'POST' and request.headers.get('content-type') == 'application/json':
+        # data = request.stream.read().decode('utf8')
+        # return data
+        r = request.get_json()
+        print_dict(r)
+        return jsonify(r)
     return "<h1>Errrr! Let's drink a flask of whiskey!</h1>"
 
 # РЕАЛИЗАЦИЯ ЧЕРЕЗ СТАНДАРТНУЮ БИБЛИОТЕКУ
@@ -102,12 +105,12 @@ def run_server(server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
     httpd = server_class(server_address, handler_class)
     httpd.serve_forever()
 
-webhook_url = URL + 'setWebhook?url=http://999109-cm78017.tmweb.ru:8001/'
+webhook_url = URL + 'setWebhook?url=https://999109-cm78017.tmweb.ru:8443/'
 getMe_url = URL+'getMe'
 
 if __name__ == '__main__':
-    # print(webhook_url)
-    # print(getMe_url)
-    app.run(host='0.0.0.0', port=8001, ssl_context='adhoc')
+    print(webhook_url)
+    print(getMe_url)
+    # app.run(host='0.0.0.0', port=8443, ssl_context='adhoc')
     # run_server(handler_class=SimpleGetHandler)
     # main()
