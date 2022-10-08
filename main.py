@@ -21,6 +21,7 @@ TG_API_URL = f'https://api.telegram.org/bot{TG_TOKEN}/'
 
 
 def print_dict(d: dict, level=0):
+    """Verbose print function for dictionaries"""
     indent = '\t' * level
     for k, v in d.items():
         if isinstance(v, dict):
@@ -61,11 +62,6 @@ def set_webhook():
     data = {'url': f'{webhook_url}'}
     files = {'certificate' : certificate}
     r = requests.post(url=url, data=data, files=files)
-    print()
-    print(r.text)
-    print(r.url)
-    print(r.request.body)
-    print()
 
 
 def get_webhook_status():
@@ -83,7 +79,8 @@ def index():
         print_dict(r)
         try:
             chat_id = r['message']['chat']['id']
-            send_message(chat_id, 'тратата!')
+            message_text = r['message']['text']
+            send_message(chat_id, f'Cам ты {message_text}!')
         except Exception as ex:
             print('Oй!', ex)
         return jsonify(r)
