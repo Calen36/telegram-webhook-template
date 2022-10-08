@@ -38,6 +38,7 @@ async def on_startup(dp):
     print(type(certificate))
     print(certificate)
     await bot.set_webhook(WEBHOOK_URL, certificate=certificate)
+    await bot.get_webhook_info()
     # insert code here to run it after start
 
 
