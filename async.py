@@ -2,19 +2,19 @@ import aiohttp.web_request
 from aiohttp import web
 import ssl
 import json
-from main import set_webhook, get_webhook_status
+from main import set_webhook, get_webhook_status, send_message
 
 
 async def handle(request: aiohttp.web_request.Request):
     try:
-        text = await request.json()
-        print('!!!!!!!!!!!!!!!!!!')
-        print(text)
-        print(type(text))
+        r = await request.json()
+        chat_id = r['message']['chat']['id']
+        message_text = r['message']['text']
+        send_message(chat_id, f'Cам ты {message_text}!')
+
+        return web.Response(text='ok')
     except:
-        print('OOPS')
-    return web.Response(text='ok')
-    # return web.HTTPForbidden
+        return web.HTTPForbidden()
 
 app = web.Application()
 app.add_routes([web.post('/', handle)])
