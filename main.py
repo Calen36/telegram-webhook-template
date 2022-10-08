@@ -12,6 +12,7 @@ ssl_certificate = os.path.join(ssl_dir, 'public.pem')
 ssl_private_key = os.path.join(ssl_dir, 'private.key')
 ssl_context = (ssl_certificate, ssl_private_key)
 
+webhook_url = "https://999109-cm78017.tmweb.ru"
 
 with open('secr.json') as file:
     secret = json.load(file)
@@ -51,6 +52,14 @@ def get_updates():
 
 app = Flask('Webhooks Receiver')
 
+def set_webhook():
+    with open(ssl_certificate) as file:
+        certificate = file.read()
+    url = TG_API_URL + '/setwebhook'
+    headers = {'url': f'{webhook_url}', 'certificate': certificate}
+    r = requests.post(url=url, headers=headers)
+    print(r.text, r.content)
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -67,4 +76,5 @@ def index():
 
 
 if __name__ == '__main__':
+    set_webhook()
     app.run(host='0.0.0.0', port=8443, ssl_context=ssl_context)
