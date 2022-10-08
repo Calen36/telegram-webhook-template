@@ -4,6 +4,10 @@ import os
 
 import requests
 from flask import Flask, request, jsonify
+from aiogram import Bot, Dispatcher, types
+from aiogram.dispatcher.webhook import SendMessage
+from aiogram.utils.executor import start_webhook
+
 
 proj_dir = Path(__file__).resolve().parent
 ssl_dir = os.path.join(proj_dir, 'ssl')
@@ -79,5 +83,51 @@ def index():
     return "<h1>Errrr! Let's drink a flask of whiskey!</h1>"
 
 
+
+
+
+bot = Bot(token=TG_TOKEN)
+dp = Dispatcher(bot)
+
+
+@dp.message_handler()
+async def echo(message: types.Message):
+    # Regular request
+    # await bot.send_message(message.chat.id, message.text)
+    # or reply INTO webhook
+    return SendMessage(message.chat.id, message.text)
+
+
+async def on_startup(dp):
+    # await bot.set_webhook(WEBHOOK_URL)
+    # insert code here to run it after start
+    pass
+
+
+async def on_shutdown(dp):
+    # logging.warning('Shutting down..')
+    # insert code here to run it before shutdown
+    # Remove webhook (not acceptable in some cases)
+    await bot.delete_webhook()
+    # Close DB connection (if used)
+    await dp.storage.close()
+    await dp.storage.wait_closed()
+
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8443, ssl_context=ssl_context)
+    start_webhook(
+        dispatcher=dp,
+        webhook_path='',
+        on_startup=on_startup,
+        on_shutdown=on_shutdown,
+        skip_updates=True,
+        host='217.25.95.157',
+        port=8443,
+    )
+
+
+
+
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=8443, ssl_context=ssl_context)
