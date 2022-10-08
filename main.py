@@ -71,7 +71,7 @@ def index():
         r = request.get_json()
         print_dict(r)
         try:
-            chat_id = r['result'][-1]['message']['chat']['id']
+            chat_id = r['message']['chat']['id']
             send_message(chat_id, 'тратата!')
         except:
             print('Oй!')
