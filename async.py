@@ -1,17 +1,21 @@
 from aiohttp import web
 import ssl
 
+from main import set_webhook, get_webhook_status
+
+
 async def handle(request):
-    name = request.match_info.get('name', "Anonymous")
-    text = "Hello, " + name
-    return web.Response(text=text)
+    print(dir(request))
+    return web.Response(text='OK')
+    # return web.HTTPForbidden
 
 app = web.Application()
-app.add_routes([web.get('/', handle),
-                web.get('/{name}', handle)])
-
+app.add_routes([web.post('/', handle)])
 
 ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 ssl_context.load_cert_chain('ssl/public.pem', 'ssl/private.key')
 
-web.run_app(app, ssl_context=ssl_context)
+
+if __name__ == '__main__':
+    get_webhook_status()
+    web.run_app(app, ssl_context=ssl_context)
