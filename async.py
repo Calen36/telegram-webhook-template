@@ -34,6 +34,9 @@ async def echo(message: types.Message):
 
 async def on_startup(dp):
     certificate = InputFile('ssl/public.pem')
+    print('**'*40)
+    print(type(certificate))
+    print(certificate)
     await bot.set_webhook(WEBHOOK_URL, certificate=certificate)
     # insert code here to run it after start
 
