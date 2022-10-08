@@ -1,5 +1,4 @@
 import json
-from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 import os
 
@@ -8,20 +7,18 @@ from flask import Flask, request, jsonify
 
 proj_dir = Path(__file__).resolve().parent
 ssl_dir = os.path.join(proj_dir, 'ssl')
-cert = os.path.join(ssl_dir, 'public.pem')
-cert_key = os.path.join(ssl_dir, 'private.key')
-ssl_context = (cert, cert_key)
+ssl_certificate = os.path.join(ssl_dir, 'public.pem')
+ssl_private_key = os.path.join(ssl_dir, 'private.key')
+ssl_context = (ssl_certificate, ssl_private_key)
 
-HOST = '999109-cm78017.tmweb.ru'
-PORT = '8443'
-
+WEBHOOK_HOST = '999109-cm78017.tmweb.ru'
+WEBHOOK_PORT = '8443'
 
 with open('secr.json') as file:
     secret = json.load(file)
 TG_TOKEN = secret['TG_PROD_TOKEN']
 
-
-URL = f'https://api.telegram.org/bot{TG_TOKEN}/'
+TG_API_URL = f'https://api.telegram.org/bot{TG_TOKEN}/'
 
 
 def print_dict(d: dict, level=0):
@@ -42,14 +39,14 @@ def print_dict(d: dict, level=0):
 
 
 def send_message(chat_id: int, text: str):
-    url = URL + 'sendMessage'
+    url = TG_API_URL + 'sendMessage'
     answer = {'chat_id': chat_id, 'text': text}
     r = requests.post(url, json=answer)
     return r.json()
 
 
 def get_updates():
-    url = URL + 'getupdates'
+    url = TG_API_URL + 'getupdates'
     r = requests.get(url)
     return r.json()
 
@@ -65,28 +62,22 @@ def main():
         print('cant get chat id')
 
 
-# РЕАЛИЗАЦИЯ ЧЕРЕЗ FLASK
-
 app = Flask('Webhooks Receiver')
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST' and request.headers.get('content-type') == 'application/json':
-        # data = request.stream.read().decode('utf8')
-        # return data
         r = request.get_json()
         print_dict(r)
+        try:
+            chat_id = r['result'][-1]['message']['chat']['id']
+            send_message(chat_id, 'тратата!')
+        except:
+            print('Oй!')
         return jsonify(r)
     return "<h1>Errrr! Let's drink a flask of whiskey!</h1>"
 
 
-webhook_url = URL + 'setWebhook?url=https://999109-cm78017.tmweb.ru:8443/'
-info_url = URL + 'getWebhookInfo'
-getMe_url = URL+'getMe'
-
-
 if __name__ == '__main__':
-    # print(getMe_url)
     app.run(host='0.0.0.0', port=8443, ssl_context=ssl_context)
-    # run_server(handler_class=SimpleGetHandler)
-    # main()
