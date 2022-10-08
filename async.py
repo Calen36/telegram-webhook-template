@@ -17,7 +17,7 @@ WEBHOOK_PATH = ''  # /path/to/api
 WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
 # webserver settings
-WEBAPP_HOST = 'https://999109-cm78017.tmweb.ru'  # or ip
+WEBAPP_HOST = '0.0.0.0'  # or ip
 WEBAPP_PORT = 8443
 
 bot = Bot(token=API_TOKEN)
@@ -34,7 +34,7 @@ async def echo(message: types.Message):
 
 async def on_startup(dp):
     certificate = InputFile('ssl/public.pem')
-    # await bot.set_webhook(WEBHOOK_URL, certificate=certificate)
+    await bot.set_webhook(WEBHOOK_URL, certificate=certificate)
     # insert code here to run it after start
 
 
