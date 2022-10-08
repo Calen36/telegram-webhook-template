@@ -15,7 +15,7 @@ ssl_certificate = os.path.join(ssl_dir, 'public.pem')
 ssl_private_key = os.path.join(ssl_dir, 'private.key')
 ssl_context = (ssl_certificate, ssl_private_key)
 
-WEBHOOK_HOST = '999109-cm78017.tmweb.ru'
+WEBHOOK_HOST = 'https://999109-cm78017.tmweb.ru'
 WEBHOOK_PORT = '8443'
 WEBHOOK_PATH = '/webhook/astro/'
 WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
