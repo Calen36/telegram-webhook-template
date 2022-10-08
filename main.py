@@ -8,19 +8,17 @@ from flask import Flask, request, jsonify
 
 proj_dir = Path(__file__).resolve().parent
 ssl_dir = os.path.join(proj_dir, 'ssl')
-cert = os.path.join(ssl_dir, 'server.crt')
-cert_key = os.path.join(ssl_dir, 'server.key')
+cert = os.path.join(ssl_dir, 'public.pem')
+cert_key = os.path.join(ssl_dir, 'private.key')
 ssl_context = (cert, cert_key)
-print(ssl_context)
 
-DEBUG = False
+HOST = '999109-cm78017.tmweb.ru'
+PORT = '8443'
+
 
 with open('secr.json') as file:
     secret = json.load(file)
-if DEBUG:
-    TG_TOKEN = secret['TG_TEST_TOKEN']
-else:
-    TG_TOKEN = secret['TG_PROD_TOKEN']
+TG_TOKEN = secret['TG_PROD_TOKEN']
 
 
 URL = f'https://api.telegram.org/bot{TG_TOKEN}/'
@@ -85,6 +83,7 @@ def index():
 webhook_url = URL + 'setWebhook?url=https://999109-cm78017.tmweb.ru:8443/'
 info_url = URL + 'getWebhookInfo'
 getMe_url = URL+'getMe'
+
 
 if __name__ == '__main__':
     # print(getMe_url)
