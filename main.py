@@ -109,8 +109,8 @@ webhook_url = URL + 'setWebhook?url=https://999109-cm78017.tmweb.ru:8443/'
 getMe_url = URL+'getMe'
 
 if __name__ == '__main__':
-    print(webhook_url)
-    print(getMe_url)
-    # app.run(host='0.0.0.0', port=8443, ssl_context='adhoc')
+    # print(webhook_url)
+    # print(getMe_url)
+    app.run(host='0.0.0.0', port=8443, ssl_context='adhoc')
     # run_server(handler_class=SimpleGetHandler)
     # main()
