@@ -16,7 +16,7 @@ bot = Bot(token=TG_TOKEN)
 dp = Dispatcher(bot)
 
 
-
+CNT = 0
 async def handle(request):
     try:
         global CNT
