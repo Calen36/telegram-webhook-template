@@ -52,13 +52,14 @@ def get_updates():
 
 app = Flask('Webhooks Receiver')
 
+
 def set_webhook():
     with open(ssl_certificate) as file:
         certificate = file.read()
-    url = TG_API_URL + '/setwebhook'
+    url = TG_API_URL + 'setwebhook'
     headers = {'url': f'{webhook_url}'}
-    files = {'file': ('certificate', open(ssl_certificate, 'rb'), 'text/plain')}
-    r = requests.post(url=url, headers=headers, files=files)
+    # files = {'file': ('certificate', open(ssl_certificate, 'rb'), 'text/plain')}
+    r = requests.post(url=url, headers=headers)
     print()
     print(r.text)
     print(r.content)
