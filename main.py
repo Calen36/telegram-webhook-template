@@ -17,7 +17,7 @@ ssl_context = (ssl_certificate, ssl_private_key)
 
 WEBHOOK_HOST = '999109-cm78017.tmweb.ru'
 WEBHOOK_PORT = '8443'
-WEBHOOK_PATH = '/api/astro/'
+WEBHOOK_PATH = '/webhook/astro/'
 WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
 # webserver settings
