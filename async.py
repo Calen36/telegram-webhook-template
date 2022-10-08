@@ -23,6 +23,8 @@ dp = Dispatcher(bot)
 
 
 CNT = 0
+
+
 async def handle(request):
     try:
         global CNT
@@ -45,7 +47,7 @@ async def handle(request):
 class WebhookServer:
     """Async server for Telegram webhook requests.
     Https server listening on all network interfaces on port 8443 (0.0.0.0:8443) for POST requests.
-    After reciving creates handling coroutine in event loop"""
+    Creates handling coroutine task for each POST request"""
     def __init__(self, tg_api_key: str, webhook_url: str, ssl_public_cert_path: str, ssl_private_key_path: str):
         self.loop = asyncio.new_event_loop()
         self.app = aiohttp.web.Application()
@@ -60,6 +62,7 @@ class WebhookServer:
         self.set_webhook()
 
     def set_webhook(self):
+        """Registers webook by Telegam api"""
         with open(self.ssl_public_cert_path, 'rb') as file:
             certificate = file.read()
         url = self.tg_api_url + 'setwebhook'
@@ -70,16 +73,32 @@ class WebhookServer:
     def run(self):
         aiohttp.web.run_app(self.app, ssl_context=self.ssl_context, loop=self.loop)
 
+    def create_handler_task(self, request):
+        async def foo(request):
+            try:
+                global CNT
+                r = await request.json()
+                chat_id = r['message']['chat']['id']
+                print(request)
+                CNT += 1
+                num = CNT
+                print(f"Start {num}")
+                print(r)
+                await bot.send_message(chat_id=chat_id, text='!!!!')
+                # send_message(chat_id, f'Сообщение {CNT}!')
+                await sleep(5)
+                print(f"Stop {num}")
+                # send_message(chat_id, f'Продолжение {CNT}')
+            except Exception as ex:
+                print('oops', ex)
+        return foo(request)
+
     def create_request_handler(self, request: aiohttp.web_request.Request):
-        self.loop.create_task(handle(request))
+        self.loop.create_task(self.create_handler_task(request))
         return aiohttp.web.Response(text='ok')
 
 
-
 if __name__ == '__main__':
-    # set_webhook()
-    # get_webhook_status()
-
     server = WebhookServer(tg_api_key=TG_TOKEN,
                            webhook_url=WEBHOOK_URL,
                            ssl_public_cert_path='ssl/public.pem',
