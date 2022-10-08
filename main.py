@@ -62,7 +62,7 @@ def set_webhook():
     r = requests.post(url=url, data=data)
     print()
     print(r.text)
-    print(r.content)
+    print(r.url)
     print()
 
 @app.route('/', methods=['POST', 'GET'])
