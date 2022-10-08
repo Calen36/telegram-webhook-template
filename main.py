@@ -17,6 +17,15 @@ ssl_context = (ssl_certificate, ssl_private_key)
 
 WEBHOOK_HOST = '999109-cm78017.tmweb.ru'
 WEBHOOK_PORT = '8443'
+WEBHOOK_PATH = '/api/astro/'
+WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+
+# webserver settings
+
+WEBAPP_HOST = '0.0.0.0'  # or ip
+WEBAPP_PORT = 8443
+
+
 
 with open('secr.json') as file:
     secret = json.load(file)
@@ -99,7 +108,7 @@ async def echo(message: types.Message):
 
 
 async def on_startup(dp):
-    # await bot.set_webhook(WEBHOOK_URL)
+    await bot.set_webhook(WEBHOOK_URL)
     # insert code here to run it after start
     pass
 
@@ -118,12 +127,12 @@ async def on_shutdown(dp):
 if __name__ == '__main__':
     start_webhook(
         dispatcher=dp,
-        webhook_path='',
+        webhook_path=WEBHOOK_PATH,
         on_startup=on_startup,
         on_shutdown=on_shutdown,
         skip_updates=True,
-        host='https://217.25.95.157',
-        port=8443,
+        host=WEBAPP_HOST,
+        port=WEBHOOK_PORT,
     )
 
 
