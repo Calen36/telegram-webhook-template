@@ -122,7 +122,7 @@ if __name__ == '__main__':
         on_startup=on_startup,
         on_shutdown=on_shutdown,
         skip_updates=True,
-        host='217.25.95.157',
+        host='https://217.25.95.157',
         port=8443,
     )
 
