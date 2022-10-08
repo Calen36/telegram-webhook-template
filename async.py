@@ -1,3 +1,4 @@
+import asyncio
 from asyncio import sleep
 
 import aiohttp.web_request
@@ -9,7 +10,6 @@ from main import set_webhook, get_webhook_status, send_message
 CNT = 0
 
 async def foo(request):
-    await sleep(0.1)
     global CNT
     r = await request.json()
     print(request)
@@ -25,12 +25,7 @@ async def foo(request):
 
 async def handle(request: aiohttp.web_request.Request):
     try:
-        # chat_id = r['message']['chat']['id']
-        # message_text = r['message']['text']
-
-        # send_message(chat_id, f'Сообщение {CNT}!')
-        # send_message(chat_id, f'Продолжение {CNT}')
-        await foo(request)
+        loop.create_task(foo(request))
         return web.Response(text='ok')
     except Exception as ex:
         return web.Response(text=str(ex))
@@ -47,4 +42,5 @@ ssl_context.load_cert_chain('ssl/public.pem', 'ssl/private.key')
 if __name__ == '__main__':
     set_webhook()
     get_webhook_status()
-    web.run_app(app, ssl_context=ssl_context)
+    loop = asyncio.new_event_loop()
+    web.run_app(app, ssl_context=ssl_context, loop=loop)
