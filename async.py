@@ -13,6 +13,7 @@ async def handle(request: aiohttp.web_request.Request):
     global CNT
     try:
         r = await request.json()
+        print(request)
         # chat_id = r['message']['chat']['id']
         # message_text = r['message']['text']
         CNT += 1
