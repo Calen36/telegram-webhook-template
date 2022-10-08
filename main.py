@@ -57,10 +57,13 @@ def set_webhook():
         certificate = file.read()
     url = TG_API_URL + '/setwebhook'
     headers = {'url': f'{webhook_url}'}
-    files = {'certificate': certificate}
+    files = {'certificate': bytes(certificate)}
+    print(type(certificate), type(bytes(certificate)))
     r = requests.post(url=url, headers=headers, files=files)
-    print(r.text, r.content)
-
+    print()
+    print(r.text)
+    print(r.content)
+    print()
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
