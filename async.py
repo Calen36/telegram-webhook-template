@@ -1,10 +1,9 @@
-""""""
 import json
 import asyncio
 from asyncio import sleep
 
 import requests
-from aiogram import Bot, Dispatcher
+from aiogram import Bot
 
 import aiohttp.web_request
 from aiohttp import web
@@ -43,7 +42,7 @@ class WebhookServer:
         url = self.tg_api_url + 'setwebhook'
         data = {'url': f'{self.webhook_url}'}
         files = {'certificate': certificate}
-        requests.post(url=url, data=data, files=files) # TODO переписать на aiohttp
+        requests.post(url=url, data=data, files=files)
 
     def run(self):
         """Starts server"""
@@ -55,7 +54,6 @@ class WebhookServer:
             try:
                 r = await request.json()
                 chat_id = r['message']['chat']['id']
-                print(request)
                 self.counter += 1
                 num = self.counter
                 print(f"Start {num}")
