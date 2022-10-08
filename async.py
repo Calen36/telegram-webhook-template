@@ -1,64 +1,17 @@
-import json
+from aiohttp import web
+import ssl
 
-from aiogram import Bot, types
-from aiogram.dispatcher import Dispatcher
-from aiogram.dispatcher.webhook import SendMessage
-from aiogram.utils.executor import start_webhook
-from aiogram.types.input_file import InputFile
+async def handle(request):
+    name = request.match_info.get('name', "Anonymous")
+    text = "Hello, " + name
+    return web.Response(text=text)
 
-with open('secr.json') as file:
-    secret = json.load(file)
-API_TOKEN = secret['TG_PROD_TOKEN']
-TG_API_URL = f'https://api.telegram.org/bot{API_TOKEN}/'
-
-# webhook settings
-WEBHOOK_HOST = 'https://999109-cm78017.tmweb.ru:8443'
-WEBHOOK_PATH = ''  # /path/to/api
-WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
-
-# webserver settings
-WEBAPP_HOST = '0.0.0.0'  # or ip
-WEBAPP_PORT = 8443
-
-bot = Bot(token=API_TOKEN)
-dp = Dispatcher(bot)
+app = web.Application()
+app.add_routes([web.get('/', handle),
+                web.get('/{name}', handle)])
 
 
-@dp.message_handler()
-async def echo(message: types.Message):
-    # Regular request
-    # await bot.send_message(message.chat.id, message.text)
-    # or reply INTO webhook
-    # return SendMessage(message.chat.id, message.text)
-    print('!!'*50)
-    print(message.text)
+ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+ssl_context.load_cert_chain('ssl/public.pem', 'ssl/private.key')
 
-
-async def on_startup(dp):
-    certificate = InputFile('ssl/public.pem')
-    print('**'*40)
-    await bot.set_webhook(WEBHOOK_URL, certificate=certificate)
-    x = await bot.get_webhook_info()
-    print(x)
-    # insert code here to run it after start
-
-
-async def on_shutdown(dp):
-    # insert code here to run it before shutdown
-    # Remove webhook (not acceptable in some cases)
-    # await bot.delete_webhook()
-    # Close DB connection (if used)
-    await dp.storage.close()
-    await dp.storage.wait_closed()
-
-
-if __name__ == '__main__':
-    start_webhook(
-        dispatcher=dp,
-        webhook_path=WEBHOOK_PATH,
-        on_startup=on_startup,
-        on_shutdown=on_shutdown,
-        skip_updates=True,
-        host=WEBAPP_HOST,
-        port=WEBAPP_PORT,
-    )
+web.run_app(app, ssl_context=ssl_context)
