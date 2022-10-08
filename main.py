@@ -1,10 +1,64 @@
-from flask import Flask, request
 import json
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+import requests
+from flask import Flask, request
+
+DEBUG = False
 
 with open('secr.json') as file:
     secret = json.load(file)
-TG_TOKEN = secret['TG_TEST_TOKEN']
+if DEBUG:
+    TG_TOKEN = secret['TG_TEST_TOKEN']
+else:
+    TG_TOKEN = secret['TG_PROD_TOKEN']
 
+
+URL = f'https://api.telegram.org/bot{TG_TOKEN}/'
+
+
+def print_dict(d: dict, level=0):
+    indent = '\t' * level
+    for k, v in d.items():
+        if isinstance(v, dict):
+            print(f"{indent}{k}:")
+            print_dict(v, level=level+1)
+        elif isinstance(v, list):
+            for entry in v:
+                if isinstance(entry, dict):
+                    print(f"{indent}{k}:")
+                    print_dict(entry, level=level+1)
+                else:
+                    print(f"{indent}{v}")
+        else:
+            print(f"{indent}{k}: {v}")
+
+
+def send_message(chat_id: int, text: str):
+    url = URL + 'sendMessage'
+    answer = {'chat_id': chat_id, 'text': text}
+    r = requests.post(url, json=answer)
+    return r.json()
+
+
+def get_updates():
+    url = URL + 'getupdates'
+    r = requests.get(url)
+    return r.json()
+
+
+def main():
+    # r = requests.get(URL + 'getMe')
+    # print_dict(r.json())
+    r = get_updates()
+    try:
+        chat_id = r['result'][-1]['message']['chat']['id']
+        send_message(chat_id, 'тратата!')
+    except:
+        print('cant get chat id')
+
+
+# РЕАЛИЗАЦИЯ ЧЕРЕЗ FLASK
 app = Flask('Webhooks Receiver')
 
 
@@ -13,17 +67,14 @@ def index():
     if request.headers.get('content-type') == 'application/json':
         data = request.stream.read().decode('utf8')
         return data
-    return '<h1>ABRA! CADABRA!</h1>'
+    return "<h1>Errrr! Let's drink a flask of whiskey!</h1>"
 
-
-from email import message
-from http.server import HTTPServer, BaseHTTPRequestHandler
-
-
+# РЕАЛИЗАЦИЯ ЧЕРЕЗ СТАНДАРТНУЮ БИБЛИОТЕКУ
 
 
 APP_HOST = '0.0.0.0'
 APP_PORT = 8000
+
 
 class SimpleGetHandler(BaseHTTPRequestHandler):
     def _set_headers(self):
@@ -32,10 +83,15 @@ class SimpleGetHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def _html(self, message):
-        content = (f"<html><body><h1>{message}</h1></body></html>")
+        content = f"<html><body><h1>{message}</h1></body></html>"
         return content.encode('utf8')
 
     def do_GET(self):
+        self._set_headers()
+        message = 'Kurwa!'
+        self.wfile.write(self._html(message))
+
+    def do_POST(self):
         self._set_headers()
         message = 'Kurwa!'
         self.wfile.write(self._html(message))
@@ -46,10 +102,12 @@ def run_server(server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
     httpd = server_class(server_address, handler_class)
     httpd.serve_forever()
 
-
+webhook_url = URL + 'setWebhook?url=http://999109-cm78017.tmweb.ru:8001/'
+getMe_url = URL+'getMe'
 
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=8080)
-    run_server(handler_class=SimpleGetHandler)
-
-
+    # print(webhook_url)
+    # print(getMe_url)
+    app.run(host='0.0.0.0', port=8000, ssl_context='adhoc')
+    # run_server(handler_class=SimpleGetHandler)
+    # main()
