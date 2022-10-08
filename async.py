@@ -29,8 +29,9 @@ async def echo(message: types.Message):
     # Regular request
     # await bot.send_message(message.chat.id, message.text)
     # or reply INTO webhook
-    return SendMessage(message.chat.id, message.text)
-
+    # return SendMessage(message.chat.id, message.text)
+    print('!!'*50)
+    print(message.text)
 
 async def on_startup(dp):
     certificate = InputFile('ssl/public.pem')
