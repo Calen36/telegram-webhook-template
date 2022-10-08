@@ -1,10 +1,10 @@
 import json
 
-from aiogram_webhook import Bot, types
-from aiogram_webhook.dispatcher import Dispatcher
-from aiogram_webhook.dispatcher.webhook import SendMessage
-from aiogram_webhook.utils.executor import start_webhook
-from aiogram_webhook.types.input_file import InputFile
+from aiogram import Bot, types
+from aiogram.dispatcher import Dispatcher
+from aiogram.dispatcher.webhook import SendMessage
+from aiogram.utils.executor import start_webhook
+from aiogram.types.input_file import InputFile
 
 with open('secr.json') as file:
     secret = json.load(file)
