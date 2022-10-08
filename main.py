@@ -12,7 +12,7 @@ ssl_certificate = os.path.join(ssl_dir, 'public.pem')
 ssl_private_key = os.path.join(ssl_dir, 'private.key')
 ssl_context = (ssl_certificate, ssl_private_key)
 
-webhook_url = "https://999109-cm78017.tmweb.ru"
+webhook_url = "https://999109-cm78017.tmweb.ru:8443"
 
 with open('secr.json') as file:
     secret = json.load(file)
@@ -58,13 +58,13 @@ def set_webhook():
         certificate = file.read()
     print(type(certificate))
     url = TG_API_URL + 'setwebhook'
-    data = {'url': f'{webhook_url}',
-            "certificate": certificate}
-    r = requests.post(url=url, data=data)
+    data = {'url': f'{webhook_url}'}
+    files = {file:{'certificate' : certificate}}
+    r = requests.post(url=url, data=data, files=files)
     print()
     print(r.text)
     print(r.url)
-    print(r.request.url)
+    print(r.request.body)
     print()
 
 
