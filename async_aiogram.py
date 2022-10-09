@@ -2,6 +2,10 @@
 самоподписанный ssl сертификат. В этом случае используется утилита ngrok, которая создает тоннель от локальной машины к
 машине в домене ngrok.io (который уже имеет нормально подписанный сертифиакт). Для регистрации вебхука испльзуется адрес в домене
 ngrok.io, запросы с которого пробрасываются на локальную машину.
+
+Для корректной работы требуется:
+1) создать и запустить systemd сервис, который запускает команду ngrok http 8443 --log /root/ngrok/log.log
+2) запустить данный скрипт, доменное имя будет взято из логов ngrok'а и присвоено переменной WEBHOOK_URL
 """
 
 
@@ -28,14 +32,14 @@ WEBHOOK_PATH = ''  # /path/to/api
 
 
 def get_ngrok_domen_name(log_path='/root/ngrok/log.log'):
+    """Возвращает последнее доменное имя из лога ngrok'а"""
     with open(log_path, 'r') as log_file:
         log = log_file.read()
-
     list_found = list(re.finditer(r'addr=http://localhost:8443 url=https://.{1,40}.eu.ngrok.io', log))
     match = list_found[-1].group() if list_found else None
     result = re.sub(r'^addr=http://localhost:8443 url=', '', match)
-    print('#'*100)
-    print(result)
+    print('*'*100)
+    print(f'Domen name found: {result}')
     return result
 
 
@@ -73,7 +77,7 @@ async def on_startup(dp):
     """Регистрируем вебхук при старте приложения.
     Вариант когда не используется ngrok и предоставляется самоподписанный сертификат представлен тут как возможный задел
     на будущее, т.к. пока не могу заставить http сервер aiogram отдавать сертификат."""
-    print('**' * 40)
+    print('*' * 80)
     await bot.set_webhook(WEBHOOK_URL, certificate=None if USE_NGROK else InputFile('ssl/public.pem'))
     info = await bot.get_webhook_info()
     print(info)
