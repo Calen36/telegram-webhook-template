@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 import ssl
 
+import aiohttp
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.dispatcher.filters import Text
@@ -67,7 +68,20 @@ ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 ssl_context.load_cert_chain(ssl_certificate, ssl_private_key)
 
 bot = Bot(token=API_TOKEN)
-bot._connector_init = dict(limit=40, ssl=ssl_context)
+
+
+class MyBot(Bot):
+    def __init__(self):
+        super(MyBot, self).__init__()
+        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        ssl_context.load_cert_chain(ssl_certificate, ssl_private_key)
+
+        self._session = None
+        self._connector_class = aiohttp.TCPConnector
+        self._connector_init = dict(limit=40, ssl=ssl_context)
+
+
+bot = MyBot(token=API_TOKEN)
 
 dp = Dispatcher(bot)
 
