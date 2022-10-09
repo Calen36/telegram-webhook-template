@@ -1,3 +1,5 @@
+"""Простой синхронный вебхук-сервер на Фласке. Предполагает использование синхронного телеграм-бота"""
+
 import json
 from pathlib import Path
 import os
@@ -60,7 +62,7 @@ def set_webhook():
     url = TG_API_URL + 'setwebhook'
     data = {'url': f'{webhook_url}'}
     files = {'certificate' : certificate}
-    r = requests.post(url=url, data=data, files=files)
+    requests.post(url=url, data=data, files=files)
 
 
 def get_webhook_status():
