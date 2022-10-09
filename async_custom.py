@@ -1,10 +1,13 @@
+"""Кастомная реализация асинхронного вебхук-сервера на основе aiohttp. Работает с самоподписанным ssl сертификатом,
+напрямую без костылей типа ngrok. Когда асинхронность необходима, а весь функционал aiogram не обязателен"""
+
+
 import json
 import asyncio
 from asyncio import sleep
 
 import requests
 from aiogram import Bot
-
 import aiohttp.web_request
 from aiohttp import web
 import aiohttp
@@ -22,18 +25,26 @@ class WebhookServer:
     Creates handling coroutine task for each POST request"""
     def __init__(self, tg_api_key: str, webhook_url: str, ssl_public_cert_path: str, ssl_private_key_path: str):
         self.loop = asyncio.new_event_loop()
+
+        # routing
         self.app = aiohttp.web.Application()
         self.app.add_routes([aiohttp.web.post('/', self.put_request_handler_in_event_loop)])
-        self.bot = Bot(tg_api_key)
+
+        # ssl-cerificate
         self.ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         self.ssl_context.load_cert_chain(ssl_public_cert_path, ssl_private_key_path)
         self.ssl_public_cert_path = ssl_public_cert_path
+
+        # Telegram API
         self.tg_api_key = tg_api_key
         self.tg_api_url = f'https://api.telegram.org/bot{tg_api_key}/'
-        self.webhook_url = webhook_url
-        self.counter = 0
+        self.bot = Bot(tg_api_key)
 
+        # Webhook
+        self.webhook_url = webhook_url
         self.set_webhook()
+
+        self.counter = 0  # for demo only
 
     def set_webhook(self):
         """Registers webook in Telegam api"""
@@ -45,7 +56,7 @@ class WebhookServer:
         requests.post(url=url, data=data, files=files)
 
     def run(self):
-        """Starts server"""
+        """Starts listening server"""
         aiohttp.web.run_app(self.app, ssl_context=self.ssl_context, loop=self.loop)
 
     def create_handler_task(self, request: aiohttp.web_request.Request):
@@ -56,12 +67,12 @@ class WebhookServer:
                 chat_id = r['message']['chat']['id']
                 self.counter += 1
                 num = self.counter
-                print(f"Start {num}")
+                print(f"Начало задачи {num}")
                 print(r)
                 await self.bot.send_message(chat_id=chat_id, text='!!!!')
                 # send_message(chat_id, f'Сообщение {CNT}!')
                 await sleep(5)
-                print(f"Stop {num}")
+                print(f"Конец задачи {num}")
                 # send_message(chat_id, f'Продолжение {CNT}')
             except Exception as ex:
                 print('oops', ex)
