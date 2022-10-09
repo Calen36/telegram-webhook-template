@@ -175,7 +175,7 @@ if __name__ == '__main__':
     app.on_shutdown.append(on_shutdown)
 
     # Generate SSL context
-    context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     context.load_cert_chain(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV)
 
     # Start web-application.
