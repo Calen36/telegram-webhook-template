@@ -30,16 +30,17 @@ WEBHOOK_PATH = ''  # /path/to/api
 def get_ngrok_domen_name(log_path='/root/ngrok/log.log'):
     with open(log_path, 'r') as log_file:
         log = log_file.read()
+
     list_found = list(re.finditer(r'addr=http://localhost:8443 url=https://.{1,40}.eu.ngrok.io', log))
     match = list_found[-1].group() if list_found else None
+    result = re.sub(r'^addr=http://localhost:8443 url=', '', match)
     print('#'*100)
-    print(match)
-
-get_ngrok_domen_name()
+    print(result)
+    return result
 
 
 if USE_NGROK:
-    WEBHOOK_URL = "https://a652-176-221-149-31.eu.ngrok.io"
+    WEBHOOK_URL = get_ngrok_domen_name()
 else:
     WEBHOOK_HOST = 'https://999109-cm78017.tmweb.ru:8443'
     WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
