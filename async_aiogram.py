@@ -6,6 +6,7 @@ ngrok.io, запросы с которого пробрасываются на �
 
 
 import json
+import re
 
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
@@ -24,6 +25,18 @@ API_TOKEN = secret['TG_PROD_TOKEN']
 TG_API_URL = f'https://api.telegram.org/bot{API_TOKEN}/'
 
 WEBHOOK_PATH = ''  # /path/to/api
+
+
+def get_ngrok_domen_name(log_path='/root/ngrok/log.log'):
+    with open(log_path, 'r') as log_file:
+        log = log_file.read()
+    list_found = list(re.finditer(r'addr=http://localhost:8443 url=https://.{1,40}.eu.ngrok.io'))
+    match = list_found[-1] if list_found else None
+    print('#'*100)
+    print(match)
+
+get_ngrok_domen_name()
+
 
 if USE_NGROK:
     WEBHOOK_URL = "https://a652-176-221-149-31.eu.ngrok.io"
