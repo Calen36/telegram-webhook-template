@@ -16,7 +16,7 @@ import ssl
 with open('secr.json') as file:
     secret = json.load(file)
 TG_TOKEN = secret['TG_PROD_TOKEN']
-WEBHOOK_URL = "https://999109-cm78017.tmweb.ru:8443"
+WEBHOOK_URL = "https://example.com:8443"
 
 
 class WebhookServer:
