@@ -56,7 +56,6 @@ class WebhookServer:
         data = {'url': f'{self.webhook_url}'}
         files = {'certificate': certificate}
         requests.post(url=url, data=data, files=files)
-        print(f'WEBHOOK SET: {url} {data} {files}')
 
     def run(self):
         """Starts listening server"""
@@ -83,9 +82,9 @@ class WebhookServer:
                 print('oops', ex)
         return task(request)
 
-
     def put_request_handler_in_event_loop(self, request: aiohttp.web_request.Request):
         """Registers coroutines for handling requests in event loop"""
+        print('OI!')
         self.loop.create_task(self.create_handler_task(request))
         return aiohttp.web.Response(text='ok')
 
