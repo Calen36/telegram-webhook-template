@@ -1,3 +1,5 @@
+import re
+
 def get_ngrok_domen_name(log_path='/root/ngrok/log.log'):
     """Возвращает последнее доменное имя из лога ngrok'а"""
     with open(log_path, 'r') as log_file:

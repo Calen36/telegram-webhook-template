@@ -10,7 +10,6 @@ ngrok.io, запросы с которого пробрасываются на �
 
 
 import json
-import re
 
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
