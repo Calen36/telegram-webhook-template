@@ -59,6 +59,8 @@ class WebhookServer:
 
     def run(self):
         """Starts listening server"""
+        print('STARTING SERVER')
+        print(self.tg_api_url)
         aiohttp.web.run_app(self.app, ssl_context=self.ssl_context, loop=self.loop)
 
     def create_handler_task(self, request: aiohttp.web_request.Request):
