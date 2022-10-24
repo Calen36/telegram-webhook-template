@@ -13,7 +13,7 @@ from aiohttp import web
 import aiohttp
 import ssl
 
-from async_aiogram import get_ngrok_domen_name
+from ngrok import get_ngrok_domen_name
 
 with open('secr.json') as file:
     secret = json.load(file)
