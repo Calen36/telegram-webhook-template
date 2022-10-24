@@ -13,10 +13,12 @@ from aiohttp import web
 import aiohttp
 import ssl
 
+from async_aiogram import get_ngrok_domen_name
+
 with open('secr.json') as file:
     secret = json.load(file)
 TG_TOKEN = secret['TG_PROD_TOKEN']
-WEBHOOK_URL = "https://example.com:8443"
+# WEBHOOK_URL = "https://example.com:8443"
 
 
 class WebhookServer:
@@ -78,6 +80,7 @@ class WebhookServer:
                 print('oops', ex)
         return task(request)
 
+
     def put_request_handler_in_event_loop(self, request: aiohttp.web_request.Request):
         """Registers coroutines for handling requests in event loop"""
         self.loop.create_task(self.create_handler_task(request))
@@ -86,7 +89,7 @@ class WebhookServer:
 
 if __name__ == '__main__':
     server = WebhookServer(tg_api_key=TG_TOKEN,
-                           webhook_url=WEBHOOK_URL,
+                           webhook_url=get_ngrok_domen_name(),
                            ssl_public_cert_path='ssl/public.pem',
                            ssl_private_key_path='ssl/private.key')
     server.run()
