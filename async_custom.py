@@ -56,6 +56,7 @@ class WebhookServer:
         data = {'url': f'{self.webhook_url}'}
         files = {'certificate': certificate}
         requests.post(url=url, data=data, files=files)
+        print(f'WEBHOOK SET: {url} {data} {files}')
 
     def run(self):
         """Starts listening server"""
